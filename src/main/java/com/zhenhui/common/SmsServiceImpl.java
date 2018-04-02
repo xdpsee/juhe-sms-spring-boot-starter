@@ -29,12 +29,12 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
 
     private static final String API_URI_FORMAT = "http://v.juhe.cn/sms/send?key=%s&mobile=%s&tpl_id=%d&tpl_value=%s";
 
-    private final static ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
+    private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     static {
-        DEFAULT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        DEFAULT_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        DEFAULT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        DEFAULT_MAPPER.setVisibility(DEFAULT_MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
+        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        OBJECT_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        OBJECT_MAPPER.setVisibility(OBJECT_MAPPER.getSerializationConfig().getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
@@ -70,7 +70,7 @@ public class SmsServiceImpl implements SmsService, InitializingBean {
         Response response = httpClient.newCall(request).execute();
         if (response.isSuccessful() && response.body() != null) {
             try {
-                return DEFAULT_MAPPER.readValue(response.body().string(), new TypeReference<SmsSendResult>(){});
+                return OBJECT_MAPPER.readValue(response.body().string(), new TypeReference<SmsSendResult>(){});
             } catch (Exception e) {
                 e.printStackTrace();
             }
