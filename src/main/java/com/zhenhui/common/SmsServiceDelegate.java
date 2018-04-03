@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 public class SmsServiceDelegate {
 
-    private static final String API_URI_FORMAT = "http://v.juhe.cn/sms/send?key=%s&mobile=%s&tpl_id=%d&tpl_value=%s";
+    private static final String API_URI = "https://v.juhe.cn/sms/send";
 
     private final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -45,7 +46,6 @@ public class SmsServiceDelegate {
 
     private OkHttpClient httpClient;
 
-
     SmsSendResult send(String phone, long templateId, Map<String, String> params) throws IOException {
 
         final List<String> encodedParams = new ArrayList<>();
@@ -58,8 +58,15 @@ public class SmsServiceDelegate {
         });
 
         Request request = new Request.Builder()
-                .url(String.format(API_URI_FORMAT, properties.getAppKey(), phone, templateId, String.join(",", encodedParams)))
+                .url(API_URI)
+                .post(new FormBody.Builder()
+                        .add("key", properties.getAppKey())
+                        .add("mobile", phone)
+                        .add("tpl_id", String.valueOf(templateId))
+                        .add("tpl_value", String.join(",", encodedParams))
+                        .build())
                 .build();
+
         Response response = httpClient.newCall(request).execute();
         if (response.isSuccessful() && response.body() != null) {
             try {
