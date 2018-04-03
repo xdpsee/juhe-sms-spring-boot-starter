@@ -1,17 +1,33 @@
 package com.zhenhui.common;
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.IOException;
 import java.util.Map;
 
-public interface SmsService {
+public class SmsService implements InitializingBean {
+
+    @Autowired
+    private SmsServiceProperties properties;
+
+    private SmsServiceDelegate delegate;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.delegate = new SmsServiceDelegate(properties);
+    }
 
     /**
-     * 发送短信息
-     * @param phone 手机号码
-     * @param templateId 短信模板ID
-     * @param params 模板参数
-     * @return
+     *
+     * @param phone
+     * @param templateId
+     * @param params
+     * @return null or SmsSendResult
+     * @throws IOException
      */
-    SmsSendResult send(String phone, long templateId, Map<String, String> params) throws IOException;
+    public SmsSendResult send(String phone, long templateId, Map<String, String> params) throws IOException {
+        return delegate.send(phone, templateId, params);
+    }
 
 }

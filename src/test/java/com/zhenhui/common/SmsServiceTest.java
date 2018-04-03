@@ -1,21 +1,30 @@
 package com.zhenhui.common;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
-public class SmsServiceTest extends TestCase {
+import java.util.HashMap;
 
-    public SmsServiceTest(String testName ) {
-        super( testName );
-    }
+import static junit.framework.TestCase.assertTrue;
 
-    public static Test suite() {
-        return new TestSuite( SmsServiceTest.class );
-    }
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = SmsServiceAutoConfiguration.class)
+@TestPropertySource(locations = "classpath:test.properties")
+public class SmsServiceTest {
 
-    public void testSms() {
-        assertTrue( true );
+    @Autowired
+    private SmsService smsService;
+
+    @Test
+    public void testSms() throws Exception{
+
+        SmsSendResult result = smsService.send("17036492138", 11L, new HashMap<>());
+        assertTrue(result != null);
+
     }
 }
 

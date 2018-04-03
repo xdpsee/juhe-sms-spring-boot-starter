@@ -7,6 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("sms.juhe")
 public class SmsServiceProperties {
 
-    private String appKey;
+    private boolean enabled;
+
+    private String appKey = "";
 
 }
